@@ -1,0 +1,49 @@
+.stApp {
+    background-color: #0e1117;
+}
+
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+h1, h2, h3, h4 {
+    color: white;
+}
+
+.card {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    min-height: 130px;
+}
+
+.card-title {
+    color: #8b949e;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.card-value {
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+[data-testid="stMetric"] {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+div[data-testid="stDataFrame"] {
+    border: 1px solid #30363d;
+    border-radius: 10px;
+}
+
+hr {
+    border-color: #30363d;
+}
