@@ -1,49 +1,230 @@
+/* =========================================
+   GLOBAL
+========================================= */
+
 .stApp {
-    background-color: #0e1117;
+    background: #0b1120;
 }
 
-.block-container {
-    padding-top: 2rem;
+.main .block-container {
+    max-width: 1400px;
+    padding-top: 1.5rem;
     padding-bottom: 2rem;
 }
 
-h1, h2, h3, h4 {
-    color: white;
+/* =========================================
+   DATASET SELECTOR
+========================================= */
+
+div[data-baseweb="select"] > div {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+    border-radius: 14px !important;
+
+    transition: all 0.3s ease;
 }
 
-.card {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 12px;
-    padding: 20px;
+div[data-baseweb="select"] > div:hover {
+    border-color: #38bdf8 !important;
+}
+
+/* =========================================
+   FEATURE IMPORTANCE
+========================================= */
+
+.feature-box {
+
+    background: linear-gradient(
+        135deg,
+        #1e3a8a,
+        #172554
+    );
+
+    border: 1px solid #2563eb;
+
+    border-radius: 20px;
+
+    padding: 2rem;
+
     text-align: center;
-    min-height: 130px;
+
+    margin-bottom: 2rem;
+
+    transition: all 0.3s ease;
+
+    box-shadow:
+        0 10px 30px rgba(37, 99, 235, 0.15);
 }
 
-.card-title {
-    color: #8b949e;
-    font-size: 14px;
-    margin-bottom: 10px;
+.feature-box:hover {
+
+    transform: translateY(-5px);
+
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 15px 40px rgba(56, 189, 248, 0.25);
 }
 
-.card-value {
-    color: white;
-    font-size: 26px;
-    font-weight: bold;
+.feature-title {
+
+    color: #bfdbfe;
+
+    font-size: 1.3rem;
+
+    font-weight: 600;
+
+    margin-bottom: 1rem;
 }
+
+.feature-value {
+
+    color: #ffffff;
+
+    font-size: 4rem;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+}
+
+/* =========================================
+   METRIC CARD
+========================================= */
 
 [data-testid="stMetric"] {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    padding: 15px;
-    border-radius: 12px;
+
+    background: linear-gradient(
+        180deg,
+        #111827,
+        #0f172a
+    );
+
+    border: 1px solid #334155;
+
+    border-radius: 18px;
+
+    padding: 1rem;
+
+    transition: all 0.3s ease;
+
+    min-height: 150px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
 }
 
-div[data-testid="stDataFrame"] {
-    border: 1px solid #30363d;
-    border-radius: 10px;
+[data-testid="stMetric"]:hover {
+
+    transform: translateY(-5px);
+
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 10px 25px rgba(56, 189, 248, 0.15);
 }
+
+[data-testid="stMetricLabel"] {
+
+    justify-content: center;
+
+    font-size: 1rem;
+}
+
+[data-testid="stMetricValue"] {
+
+    justify-content: center;
+
+    font-size: 2rem;
+}
+
+/* =========================================
+   TITLE
+========================================= */
+
+h1 {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+h2,
+h3 {
+    color: #e2e8f0 !important;
+}
+
+/* =========================================
+   DIVIDER
+========================================= */
 
 hr {
-    border-color: #30363d;
+    border-color: #1e293b !important;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media screen and (max-width: 1024px) {
+
+    .feature-value {
+
+        font-size: 3rem;
+    }
+
+    [data-testid="stMetricValue"] {
+
+        font-size: 1.8rem;
+    }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media screen and (max-width: 768px) {
+
+    .feature-box {
+
+        padding: 1.5rem;
+    }
+
+    .feature-title {
+
+        font-size: 1rem;
+    }
+
+    .feature-value {
+
+        font-size: 2.2rem;
+    }
+
+    [data-testid="stMetric"] {
+
+        min-height: 120px;
+    }
+
+    [data-testid="stMetricValue"] {
+
+        font-size: 1.5rem;
+    }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media screen and (max-width: 480px) {
+
+    .feature-value {
+
+        font-size: 1.8rem;
+    }
+
+    .feature-title {
+
+        font-size: 0.9rem;
+    }
 }

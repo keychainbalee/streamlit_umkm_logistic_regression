@@ -1,16 +1,65 @@
 import pickle
+import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.linear_model import LogisticRegression
 
-sns.set_theme(style="darkgrid")
+# =====================================
+# CONSTANTS
+# =====================================
 
+EDUCATION_MAP = {
+    1: "SD",
+    2: "SMP",
+    3: "SMA",
+    4: "Sarjana",
+    5: "Magister"
+}
+
+GENDER_MAP = {
+    0: "Perempuan",
+    1: "Laki-laki"
+}
+
+
+# =====================================
+# LOAD DATA
+# =====================================
 
 @st.cache_data
 def load_data():
-    with open("notebook_state.pkl", "rb") as f:
-        return pickle.load(f)
+    with open("UMKM RegLog.pkl", "rb") as file:
+        return pickle.load(file)
 
+
+@st.cache_data
+def get_top_feature(data):
+
+    X_train = data["X_train"]
+    y_train = data["y_train"]
+
+    model = LogisticRegression(
+        max_iter=1000,
+        random_state=42
+    )
+
+    model.fit(X_train, y_train)
+
+    importance_df = pd.DataFrame({
+        "feature": X_train.columns,
+        "importance": abs(model.coef_[0])
+    })
+
+    importance_df = importance_df.sort_values(
+        by="importance",
+        ascending=False
+    )
+
+    return importance_df.iloc[0]
+
+
+# =====================================
+# CSS
+# =====================================
 
 def load_css():
     with open("assets/style.css") as f:
@@ -20,18 +69,113 @@ def load_css():
         )
 
 
-def create_card(title, value):
+# =====================================
+# DATASET
+# =====================================
+
+def render_dataset_filter():
+
+    st.subheader("Dataset")
+
+    return st.selectbox(
+        "Pilih Dataset",
+        ["UMKM RegLog"],
+        label_visibility="collapsed"
+    )
+
+
+# =====================================
+# FEATURE IMPORTANCE
+# =====================================
+
+def render_feature_importance(data):
+
+    top_feature = get_top_feature(data)
+
+    feature_name = (
+        str(top_feature["feature"])
+        .replace("_", " ")
+        .title()
+    )
+
+    st.markdown("""
+    <style>
+    .feature-box {
+        background: linear-gradient(135deg, #1e3a8a, #172554);
+        padding: 30px;
+        border-radius: 18px;
+        text-align: center;
+        border: 1px solid #2563eb;
+        margin-bottom: 20px;
+    }
+    .feature-title {
+        color: #bfdbfe;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .feature-value {
+        color: white;
+        font-size: 56px;
+        font-weight: 800;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     st.markdown(
         f"""
-        <div class="card">
-            <div class="card-title">{title}</div>
-            <div class="card-value">{value}</div>
+        <div class="feature-box">
+            <div class="feature-title">
+                Faktor Paling Berpengaruh
+            </div>
+            <div class="feature-value">
+                {feature_name}
+            </div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
+# =====================================
+# INSIGHT
+# =====================================
+
+def render_insight_cards(data):
+
+    best_age = data["age_success_mapping"][1].idxmax()
+
+    best_education = EDUCATION_MAP.get(
+        data["education_success_mapping"][1].idxmax()
+    )
+
+    best_gender = GENDER_MAP.get(
+        data["gender_success_mapping"][1].idxmax()
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Umur Paling Sukses",
+            best_age
+        )
+
+    with col2:
+        st.metric(
+            "Pendidikan Paling Sukses",
+            best_education
+        )
+
+    with col3:
+        st.metric(
+            "Gender Dominan",
+            best_gender
+        )
+
+
+# =====================================
+# PAGE
+# =====================================
 
 def show_dashboard():
 
@@ -41,221 +185,18 @@ def show_dashboard():
 
     st.title("📈 Profil Kesuksesan UMKM")
 
-    st.markdown(
-        """
-        Dashboard visualisasi hasil analisis faktor-faktor
-        yang mempengaruhi keberhasilan UMKM menggunakan
-        Logistic Regression dan Explainable AI.
-        """
+    st.caption(
+        "Analisis faktor yang memengaruhi keberhasilan UMKM menggunakan Logistic Regression"
     )
 
     st.divider()
 
-    # =====================
-    # INSIGHT
-    # =====================
-
-    best_age = data["age_success_mapping"][1].idxmax()
-
-    education_map = {
-        1: "SD",
-        2: "SMP",
-        3: "SMA",
-        4: "Sarjana",
-        5: "Magister"
-    }
-
-    best_education_code = (
-        data["education_success_mapping"][1]
-        .idxmax()
-    )
-
-    best_education = education_map.get(
-        best_education_code,
-        str(best_education_code)
-    )
-
-    best_gender = (
-        "Perempuan"
-        if data["gender_success_mapping"][1]
-        .idxmax() == 1
-        else "Laki-Laki"
-    )
-
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        create_card(
-            "Kelompok Umur Paling Sukses",
-            best_age
-        )
-
-    with c2:
-        create_card(
-            "Pendidikan Paling Sukses",
-            best_education
-        )
-
-    with c3:
-        create_card(
-            "Gender Dominan Sukses",
-            best_gender
-        )
+    render_dataset_filter()
 
     st.divider()
 
-    # =====================
-    # PENDIDIKAN
-    # =====================
-
-    st.subheader("📚 Tingkat Kesuksesan Berdasarkan Pendidikan")
-
-    fig, ax = plt.subplots(figsize=(8, 4))
-
-    education_chart = data["education_success_mapping"][1].copy()
-
-    education_chart.index = education_chart.index.map(
-        education_map
-    )
-
-    education_chart.plot(
-        kind="bar",
-        ax=ax
-    )
-
-    ax.set_xlabel("Pendidikan")
-    ax.set_ylabel("Tingkat Kesuksesan")
-
-    st.pyplot(fig)
-
-    # =====================
-    # UMUR
-    # =====================
-
-    st.subheader("👥 Tingkat Kesuksesan Berdasarkan Umur")
-
-    fig, ax = plt.subplots(figsize=(8, 4))
-
-    data["age_success_mapping"][1].plot(
-        kind="bar",
-        ax=ax
-    )
-
-    ax.set_xlabel("Kelompok Umur")
-    ax.set_ylabel("Tingkat Kesuksesan")
-
-    st.pyplot(fig)
-
-    # =====================
-    # GENDER
-    # =====================
-
-    st.subheader("🚻 Tingkat Kesuksesan Berdasarkan Gender")
-
-    fig, ax = plt.subplots(figsize=(6, 4))
-
-    data["gender_success_mapping"][1].plot(
-        kind="bar",
-        ax=ax
-    )
-
-    ax.set_xlabel("Gender")
-    ax.set_ylabel("Tingkat Kesuksesan")
-
-    st.pyplot(fig)
+    render_feature_importance(data)
 
     st.divider()
 
-    # =====================
-    # PERBANDINGAN MODEL
-    # =====================
-
-    st.subheader("🏆 Perbandingan Performa Model")
-
-    cv_df = data["cv_summary_df"]
-
-    st.dataframe(
-        cv_df,
-        use_container_width=True
-    )
-
-    try:
-
-        metric_col = cv_df.columns[1]
-
-        fig, ax = plt.subplots(figsize=(8, 4))
-
-        sns.barplot(
-            data=cv_df,
-            x=cv_df.columns[0],
-            y=metric_col,
-            ax=ax
-        )
-
-        plt.xticks(rotation=20)
-
-        st.pyplot(fig)
-
-    except:
-        pass
-
-    st.divider()
-
-    # =====================
-    # CORRELATION MATRIX
-    # =====================
-
-    st.subheader("🔥 Correlation Heatmap")
-
-    fig, ax = plt.subplots(
-        figsize=(12, 8)
-    )
-
-    sns.heatmap(
-        data["correlation_matrix"],
-        annot=True,
-        cmap="coolwarm",
-        ax=ax
-    )
-
-    st.pyplot(fig)
-
-    st.divider()
-
-    # =====================
-    # CONFUSION MATRIX
-    # =====================
-
-    st.subheader(
-        "🎯 Confusion Matrix Logistic Regression"
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(5, 4)
-    )
-
-    sns.heatmap(
-        data["cm_lr"],
-        annot=True,
-        fmt="d",
-        cmap="Blues",
-        ax=ax
-    )
-
-    ax.set_xlabel("Prediksi")
-    ax.set_ylabel("Aktual")
-
-    st.pyplot(fig)
-
-    st.divider()
-
-    # =====================
-    # DATASET PREVIEW
-    # =====================
-
-    st.subheader("📋 Preview Dataset")
-
-    st.dataframe(
-        data["df"].head(20),
-        use_container_width=True
-    )
+    render_insight_cards(data)
