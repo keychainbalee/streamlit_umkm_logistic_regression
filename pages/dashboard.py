@@ -27,11 +27,10 @@ GENDER_MAP = {
 
 @st.cache_data
 def load_data():
-    with open("UMKM RegLog.pkl", "rb") as file:
+    with open("notebook_state (1).pkl", "rb") as file:
         return pickle.load(file)
 
 
-@st.cache_data
 def get_top_feature(data):
 
     X_train = data["X_train"]
