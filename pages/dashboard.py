@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 import streamlit as st
 from sklearn.linear_model import LogisticRegression
+import numpy as np
 
 # =====================================
 # CONSTANTS
@@ -29,33 +30,14 @@ GENDER_MAP = {
 def load_data():
     with open("notebook_state (1).pkl", "rb") as file:
         return pickle.load(file)
-
-
+    
 def get_top_feature(data):
 
-    X_train = data["X_train"]
-    y_train = data["y_train"]
+    importance_df = data["feature_importance_df"]
 
-    model = LogisticRegression(
-        max_iter=1000,
-        random_state=42
-    )
+    top_feature = importance_df.iloc[0]
 
-    model.fit(X_train, y_train)
-
-    importance_df = pd.DataFrame({
-        "feature": X_train.columns,
-        "importance": abs(model.coef_[0])
-    })
-
-    importance_df = importance_df.sort_values(
-        by="importance",
-        ascending=False
-    )
-
-    return importance_df.iloc[0]
-
-
+    return top_feature
 # =====================================
 # CSS
 # =====================================
@@ -92,7 +74,7 @@ def render_feature_importance(data):
     top_feature = get_top_feature(data)
 
     feature_name = (
-        str(top_feature["feature"])
+        str(top_feature["Feature"])
         .replace("_", " ")
         .title()
     )
@@ -170,8 +152,63 @@ def render_insight_cards(data):
             "Gender Dominan",
             best_gender
         )
+        
+def render_policy_recommendation(data):
 
+    top_features = data["top_3_features"]
 
+    st.subheader("Rekomendasi Kebijakan")
+
+    st.caption(
+        "Faktor yang memiliki pengaruh terbesar terhadap keberhasilan UMKM berdasarkan nilai Odds Ratio dari model Logistic Regression."
+    )
+
+    cols = st.columns(3)
+
+    for col, (_, row) in zip(
+        cols,
+        top_features.iterrows()
+    ):
+
+        feature = (
+            str(row["Feature"])
+            .replace("_", " ")
+            .title()
+        )
+
+        odds = float(row["Odds_Ratio"])
+
+        description = (
+            f"UMKM yang memiliki "
+            f"{feature.lower()} yang baik "
+            f"berpotensi memiliki peluang sukses "
+            f"{odds:.2f} kali lebih besar."
+        )
+
+        with col:
+
+            st.metric(
+                label=feature,
+                value=f"{odds:.2f}x"
+            )
+
+            st.caption(description)
+
+    st.success(
+        """
+        Berdasarkan hasil analisis Logistic Regression,
+        peningkatan faktor-faktor di atas dapat menjadi
+        fokus utama dalam strategi pengembangan UMKM.
+        """
+    )
+
+    st.info(
+        """
+        Insight ini dihasilkan secara otomatis dari model Logistic Regression
+        dan akan diperbarui ketika dataset berubah.
+        """
+    )
+    
 # =====================================
 # PAGE
 # =====================================
@@ -182,7 +219,7 @@ def show_dashboard():
 
     data = load_data()
 
-    st.title("📈 Profil Kesuksesan UMKM")
+    st.title("Profil Kesuksesan UMKM")
 
     st.caption(
         "Analisis faktor yang memengaruhi keberhasilan UMKM menggunakan Logistic Regression"
@@ -199,3 +236,7 @@ def show_dashboard():
     st.divider()
 
     render_insight_cards(data)
+
+    st.divider()
+
+    render_policy_recommendation(data)

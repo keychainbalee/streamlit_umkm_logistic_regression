@@ -127,6 +127,101 @@ div[data-baseweb="select"] > div:hover {
         0 10px 25px rgba(56, 189, 248, 0.15);
 }
 
+/* ==========================
+   RECOMMENDATION CARD
+========================== */
+
+.recommend-card {
+
+    background: linear-gradient(
+        180deg,
+        #1e293b,
+        #111827
+    );
+
+    border: 1px solid #334155;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    min-height: 180px;
+
+    text-align: center;
+
+    transition: all 0.3s ease;
+}
+
+.recommend-card:hover {
+
+    transform: translateY(-5px);
+
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 10px 25px rgba(56,189,248,0.20);
+}
+
+.recommend-feature {
+
+    color: #ffffff;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    margin-bottom: 20px;
+}
+
+.recommend-label {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.recommend-value {
+
+    color: #38bdf8;
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+    margin-top: 10px;
+}
+
+[data-testid="stMetric"] {
+
+    background: linear-gradient(
+        180deg,
+        #1e293b,
+        #111827
+    );
+
+    border: 1px solid #334155;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    transition: all 0.3s ease;
+}
+
+[data-testid="stMetric"]:hover {
+
+    transform: translateY(-4px);
+
+    border-color: #38bdf8;
+
+    box-shadow:
+        0 10px 25px rgba(56,189,248,0.15);
+}
+
 [data-testid="stMetricLabel"] {
 
     justify-content: center;
