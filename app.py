@@ -1,11 +1,21 @@
-import streamlit as st
-from pages.dashboard import show_dashboard
+from views.dashboard import show_dashboard
+from views.comparison import show_comparison
+from views.prediction import show_prediction
 
-st.set_page_config(
-    page_title="Profil Kesuksesan UMKM",
-    page_icon="",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+import streamlit as st
+
+page = st.sidebar.selectbox(
+    "Menu",
+    [
+        "Dashboard",
+        "Prediksi Kesuksesan UMKM",
+        "Perbandingan Dataset"
+    ]
 )
 
-show_dashboard()
+if page == "Dashboard":
+    show_dashboard()
+elif page == "Prediksi Kesuksesan UMKM":
+    show_prediction()
+else:
+    show_comparison()
