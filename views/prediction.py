@@ -210,7 +210,7 @@ def show_prediction():
     data = load_data()
 
     st.title(
-        "🎯 Analisis Model Logistic Regression"
+        "Analisis Model Logistic Regression"
     )
 
     st.caption(
@@ -247,7 +247,7 @@ def show_prediction():
     top_feature = coefficients_df.iloc[0]
 
     st.metric(
-        "⭐ Faktor Paling Berpengaruh",
+        "Faktor Paling Berpengaruh",
         top_feature["Feature"]
         .replace("_", " ")
         .title()
@@ -260,7 +260,7 @@ def show_prediction():
     # =================================
 
     st.subheader(
-        "📊 Ranking Feature Importance"
+        "Ranking Feature Importance"
     )
 
     plot_feature_importance(
@@ -274,7 +274,7 @@ def show_prediction():
     # =================================
 
     st.subheader(
-        "📈 Distribusi Faktor terhadap Kesuksesan"
+        "Distribusi Faktor terhadap Kesuksesan"
     )
 
     features = (
@@ -331,7 +331,7 @@ def show_prediction():
         .title()
     )
 
-    st.subheader("💡 Insight")
+    st.subheader("Insight")
 
     st.info(
         f"""

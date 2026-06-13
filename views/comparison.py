@@ -382,7 +382,7 @@ def show_comparison():
     st.divider()
 
     st.subheader(
-        "📈 Ringkasan Dataset"
+        "Ringkasan Dataset"
     )
 
     render_summary(
